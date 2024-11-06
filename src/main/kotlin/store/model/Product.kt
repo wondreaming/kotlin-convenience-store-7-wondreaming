@@ -1,4 +1,4 @@
 package store.model
 
-class Stock {
+class Product {
 }
