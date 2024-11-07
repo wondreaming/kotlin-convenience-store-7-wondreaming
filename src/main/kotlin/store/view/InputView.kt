@@ -13,6 +13,11 @@ object InputView {
         return userInput
     }
 
+    fun getFullPriceConfirmation(): String {
+        val userInput = getInput()
+        return userInput
+    }
+
     private fun getInput(): String {
         val input = Console.readLine().trim()
         return input
