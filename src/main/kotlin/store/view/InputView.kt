@@ -2,7 +2,7 @@ package store.view
 
 import camp.nextstep.edu.missionutils.Console
 
-object InputView {
+class InputView {
     fun getPurchaseInput(): String {
         val purchaseInput = getInput()
         return purchaseInput
