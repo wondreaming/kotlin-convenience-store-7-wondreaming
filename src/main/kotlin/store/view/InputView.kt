@@ -23,6 +23,11 @@ object InputView {
         return userInput
     }
 
+    fun getAdditionalPurchase(): String {
+        val userInput = getInput()
+        return userInput
+    }
+
     private fun getInput(): String {
         val input = Console.readLine().trim()
         return input
