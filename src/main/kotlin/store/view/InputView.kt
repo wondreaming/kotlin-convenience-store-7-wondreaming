@@ -9,7 +9,7 @@ object InputView {
     }
 
     private fun getInput(): String {
-        val input = Console.readLine()
+        val input = Console.readLine().trim()
         return input
     }
 
