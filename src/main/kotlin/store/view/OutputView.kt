@@ -18,7 +18,7 @@ class OutputView {
         println(formattedMessage)
     }
 
-    fun showMembershipDiscountPrompt() {
+    fun showMembershipDiscount() {
         println(MEMBERSHIP_DISCOUNT_MESSAGE)
     }
 
