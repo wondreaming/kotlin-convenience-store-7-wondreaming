@@ -16,9 +16,9 @@ class PurchaseInputValidator(
     private val splitPurchaseItems: List<String> = purchaseInput.split(DELIMITER).map { it.trim() }
 
     fun validate() {
-        SentenceValidator(purchaseInput).validate()
+        SentenceValidator(purchaseInput, splitPurchaseItems.size).validate()
 
-        splitPurchaseItems.forEach{ item ->
+        splitPurchaseItems.forEach { item ->
             ItemValidator(item).validate()
             val (product, quantity) = splitProductAndQuantity(item)
             NameValidator(product, products).validate()
