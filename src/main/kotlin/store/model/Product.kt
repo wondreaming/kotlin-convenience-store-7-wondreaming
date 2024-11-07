@@ -1,4 +1,7 @@
 package store.model
 
-class Product {
-}
+class Product(
+    val name: String,
+    val promotionProduct: PromotionalProduct?,
+    val nonPromotionProduct: NonPromotionalProduct?,
+)

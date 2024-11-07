@@ -1,4 +1,4 @@
-package store.controller.adapter
+package store.controller
 
 import store.model.NonPromotionalProduct
 import store.model.Product
@@ -9,59 +9,61 @@ import java.io.File
 import java.util.*
 
 class ProductController {
-    private val productsFilePath = "src/main/resources/products.md"
-    private val promotionFilePath = "src/main/resources/promotions.md"
+    private val productsFilePath = PRODUCTS_FILE_PATH
 
-    fun loadPromotionsType(): List<PromotionType> {
-        File(promotionFilePath).forEachLine { line: String ->
-            if (!line.startsWith("name")) {
-                val (name, buyQuantity, freeQuantity, _startDate, _endDate) = line.split(",")
-                val startDate = stringToLocalDate(_startDate)
-                val endDate = stringToLocalDate(_endDate)
-                PromotionType(
-                    name = name,
-                    buyQuantity = buyQuantity.toInt(),
-                    freeQuantity = freeQuantity.toInt(),
-                    startDate = startDate,
-                    endDate = endDate,
-                )
+    fun loadProducts(promotionTypes: List<PromotionType>): List<Product> =
+        File(productsFilePath).readLines()
+            .filterNot { it.startsWith(HEADER_NAME) }
+            .map { parseProduct(it, promotionTypes) }
+
+    private fun parseProduct(line: String, promotionTypes: List<PromotionType>): Product {
+        val (name, price, quantity, promotionTypeName) = line.split(DELIMITER)
+        return when {
+            promotionTypeName != NO_PROMOTION_LABEL -> {
+                parsePromotionalProduct(name, price, quantity, promotionTypeName, promotionTypes)
             }
+
+            else -> parseNonPromotionalProduct(name, price, quantity)
         }
     }
 
-    fun loadProducts(): List<Product> {
-        File(productsFilePath).forEachLine { line: String ->
-            if (!line.startsWith("name")) {
-                val (name, price, quality, promtionType) = line.split(",")
-            }
-        }
+    private fun parsePromotionalProduct(
+        name: String,
+        price: String,
+        quantity: String,
+        promotionTypeName: String,
+        promotionTypes: List<PromotionType>
+    ): Product {
+        val promotionType = promotionTypes.find { it.name == promotionTypeName }
+            ?: throw IllegalArgumentException(String.format(PROMOTION_TYPE_NOT_FOUND_ERROR, promotionTypeName))
+        return Product(
+            name = name,
+            promotionProduct = PromotionalProduct(
+                price = price.toInt(),
+                _quantity = quantity.toInt(),
+                _promotionType = promotionType
+            ),
+            nonPromotionProduct = null
+        )
     }
 
-    fun adaptProducts(products: List<Product>): List<String> {
-        return products.map { product ->
-            val displayPrice = String.format(Locale.KOREA, PRICE_FORMAT_PATTERN, product.price) + CURRENCY_SYMBOL
-            val displayQuantity = when {
-                product.quality > 0 -> String.format(QUANTITY_UNIT, product.quality)
-                else -> OUT_OF_STOCK_MESSAGE
-            }
-            val displayPromotionType: String = getPromotionLabel(product)
-            String.format(PRODUCT_DISPLAY_FORMAT, product.name, displayPrice, displayQuantity, displayPromotionType)
-        }
-    }
-
-    private fun getPromotionLabel(product: Product): String {
-        return when (product) {
-            is PromotionalProduct -> product.promotionType.name
-            is NonPromotionalProduct -> NO_PROMOTION_LABEL
-        }
+    private fun parseNonPromotionalProduct(name: String, price: String, quantity: String): Product {
+        return Product(
+            name = name,
+            promotionProduct = null,
+            nonPromotionProduct = NonPromotionalProduct(
+                price = price.toInt(),
+                _quantity = quantity.toInt()
+            )
+        )
     }
 
     companion object {
-        private const val PRICE_FORMAT_PATTERN = "%,d"
-        private const val CURRENCY_SYMBOL = "원"
-        private const val OUT_OF_STOCK_MESSAGE = "재고 없음"
-        private const val QUANTITY_UNIT = "%d개"
-        private const val NO_PROMOTION_LABEL = ""
-        private const val PRODUCT_DISPLAY_FORMAT = "- %s %s %s %s\n"
+        private const val PRODUCTS_FILE_PATH = "src/main/resources/products.md"
+        private const val HEADER_NAME = "name"
+        private const val DELIMITER = ","
+        private const val PROMOTION_TYPE_NOT_FOUND_ERROR = "PromotionType '%s' not found"
+        private const val NO_PROMOTION_LABEL = "null"
+
     }
 }
