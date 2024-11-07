@@ -136,19 +136,19 @@
    </tr>
     <tr>
       <td rowspan="4">Y/N 입력</td>
-      <td><input type="checkbox"></td>
+      <td>O</td>
       <td>빈 경우</td>
     </tr>
     <tr>
-      <td><input type="checkbox"></td>
+      <td>O</td>
       <td>y/n가 소문자인 경우</td>
     </tr>
     <tr>
-      <td><input type="checkbox"></td>
+      <td>O</td>
       <td>네/아니요라고 대답한 경우</td>
     </tr>
     <tr>
-      <td><input type="checkbox"></td>
+      <td>O</td>
       <td>Y/N가 아닌 문자인 경우</td>
     </tr>
     <tr>
