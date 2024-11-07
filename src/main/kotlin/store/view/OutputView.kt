@@ -4,7 +4,7 @@ class OutputView {
     fun showProductInfo(productsInfo: List<String>) {
         println(WELCOME_MESSAGE)
         println(PRODUCT_AVAILABILITY_MESSAGE + NEW_LINE)
-        println(productsInfo.joinToString("\n"))
+        println(productsInfo.joinToString(NEW_LINE))
         println(NEW_LINE + PURCHASE_PROMPT_MESSAGE)
     }
 
