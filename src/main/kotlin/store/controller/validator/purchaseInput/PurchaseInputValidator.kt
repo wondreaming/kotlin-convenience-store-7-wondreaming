@@ -17,7 +17,11 @@ class PurchaseInputValidator(
 
     fun validate() {
         SentenceValidator(purchaseInput, splitPurchaseItems.size).validate()
+        validateEachPurchaseItem()
+        checkDuplicateNames()
+    }
 
+    private fun validateEachPurchaseItem() {
         splitPurchaseItems.forEach { item ->
             ItemValidator(item).validate()
             val (product, quantity) = splitProductAndQuantity(item)
@@ -25,8 +29,6 @@ class PurchaseInputValidator(
             QuantityValidator(quantity).validate()
             checkStock(product, quantity)
         }
-
-        checkDuplicateNames()
     }
 
     private fun splitProductAndQuantity(purchaseItem: String): Pair<String, String> {

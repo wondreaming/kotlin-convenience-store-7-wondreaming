@@ -4,6 +4,7 @@ import store.controller.adapter.ProductAdapter
 import store.model.NonPromotionProduct
 import store.model.Product
 import store.model.PromotionProduct
+import store.model.PromotionType
 import java.io.File
 
 class ProductController(
@@ -34,18 +35,25 @@ class ProductController(
         quantity: String,
         promotionTypeName: String,
     ): Product {
+        val promotionType = findPromotionType(promotionTypeName)
+        return createProductWithPromotion(name, price.toInt(), quantity.toInt(), promotionType)
+    }
+
+    private fun createProductWithPromotion(
+        name: String,
+        price: Int,
+        quantity: Int,
+        promotionType: PromotionType
+    ) = Product(
+        name = name,
+        promotionProduct = PromotionProduct(price, quantity, promotionType),
+        nonPromotionProduct = null
+    )
+
+    private fun findPromotionType(promotionTypeName: String): PromotionType {
         val promotionTypes = promotionTypeController.loadPromotionType()
-        val promotionType = promotionTypes.find { it.name == promotionTypeName }
+        return promotionTypes.find { it.name == promotionTypeName }
             ?: throw IllegalArgumentException(String.format(PROMOTION_TYPE_NOT_FOUND_ERROR, promotionTypeName))
-        return Product(
-            name = name,
-            promotionProduct = PromotionProduct(
-                price = price.toInt(),
-                _quantity = quantity.toInt(),
-                _promotionType = promotionType
-            ),
-            nonPromotionProduct = null
-        )
     }
 
     private fun parseNonPromotionalProduct(name: String, price: String, quantity: String): Product {
