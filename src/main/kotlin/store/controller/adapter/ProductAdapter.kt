@@ -4,7 +4,7 @@ import store.model.Product
 import java.util.*
 
 class ProductAdapter {
-    fun adaptProducts(products: List<Product>): List<String> {
+    fun adaptedProducts(products: List<Product>): List<String> {
         return products.map { product ->
             val price = product.promotionProduct?.price ?: product.nonPromotionProduct?.price
             val displayPrice = String.format(Locale.KOREA, PRICE_FORMAT_PATTERN, price) + CURRENCY_SYMBOL
