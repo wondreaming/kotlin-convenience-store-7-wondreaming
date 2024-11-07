@@ -4,15 +4,15 @@ import store.model.PromotionType
 import store.util.DateUtils.stringToLocalDate
 import java.io.File
 
-class PromtionTypeController {
+class PromotionTypeController {
     private val promotionFilePath = "src/main/resources/promotions.md"
 
     fun loadPromotionType(): List<PromotionType> =
         File(promotionFilePath).readLines()
             .filterNot { it.startsWith("name") }
-            .map { parsePromtionType(it) }
+            .map { parsePromotionType(it) }
 
-    private fun parsePromtionType(line: String): PromotionType {
+    private fun parsePromotionType(line: String): PromotionType {
         val (name, buyQuantity, freeQuantity, startDate, endDate) = line.split(",")
         return PromotionType(
             name = name,
