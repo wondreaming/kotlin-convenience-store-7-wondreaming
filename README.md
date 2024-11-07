@@ -153,31 +153,31 @@
     </tr>
     <tr>
       <td rowspan="15">상품과 수량 입력</td>
-      <td><input type="checkbox"></td>
+      <td>O</td>
       <td>빈 경우</td>
     </tr>
     <tr>
-      <td><input type="checkbox"></td>
+      <td>O</td>
       <td>구분자로 쉼표(,)가 없는 경우</td>
     </tr>
     <tr>
-      <td><input type="checkbox"></td>
+      <td>O</td>
       <td>구분자로 쉼표(,)만 들어오는 경우</td>
     </tr>
     <tr>
-      <td><input type="checkbox"></td>
+      <td>O</td>
       <td>양 끝이 []이 아닌 경우</td>
     </tr>
    <tr>
-      <td><input type="checkbox"></td>
+      <td>O</td>
       <td>구분자 하이픈(-)이 없는 경우</td>
     </tr>
     <tr>
-      <td><input type="checkbox"></td>
+      <td>O</td>
       <td>구분자 하이픈(-)만 들어오는 경우</td>
     </tr>
    <tr>
-      <td><input type="checkbox"></td>
+      <td>O</td>
       <td>(수량) 숫자가 아닌 경우</td>
    </tr>
     <tr>
@@ -185,19 +185,19 @@
       <td>(수량) Long타입인 경우</td>
    </tr>
     <tr>
-      <td><input type="checkbox"></td>
+      <td>O</td>
       <td>(수량) 0인 경우</td>
    </tr>
     <tr>
-      <td><input type="checkbox"></td>
+      <td>O</td>
       <td>(수량) 소수인 경우</td>
    </tr>
     <tr>
-      <td><input type="checkbox"></td>
+      <td>O</td>
       <td>(수량) 음수인 경우</td>
    </tr>
     <tr>
-        <td><input type="checkbox"></td>
+        <td>O</td>
         <td>(수량) 재고 수량보다 많이 입력한 경우</td>
     </tr>
     <tr>
@@ -205,11 +205,11 @@
       <td>(제품명) ), 문자, 영어, 숫자 외 오류로 출력</td>
     </tr>
     <tr>
-      <td><input type="checkbox"></td>
+      <td>O</td>
       <td>(제품명) 없는 제품명을 입력한 경우</td>
     </tr>
     <tr>
-      <td><input type="checkbox"></td>
+      <td>O</td>
       <td>(제품명) 동일한 상품명을 2번이상 입력한 경우</td>
     </tr>
 </table>
