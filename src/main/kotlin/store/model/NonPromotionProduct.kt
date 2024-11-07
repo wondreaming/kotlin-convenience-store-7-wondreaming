@@ -1,6 +1,6 @@
 package store.model
 
-data class NonPromotionalProduct(
+data class NonPromotionProduct(
     override val price: Int,
     private var _quantity: Int,
 ) : ProductType {

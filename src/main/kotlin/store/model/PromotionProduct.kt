@@ -1,6 +1,6 @@
 package store.model
 
-data class PromotionalProduct(
+data class PromotionProduct(
     override val price: Int,
     private var _quantity: Int,
     private var _promotionType: PromotionType

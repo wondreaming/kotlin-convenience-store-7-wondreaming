@@ -1,13 +1,10 @@
 package store.controller
 
 import store.controller.adapter.ProductAdapter
-import store.model.NonPromotionalProduct
+import store.model.NonPromotionProduct
 import store.model.Product
-import store.model.PromotionType
-import store.model.PromotionalProduct
-import store.util.DateUtils.stringToLocalDate
+import store.model.PromotionProduct
 import java.io.File
-import java.util.*
 
 class ProductController(
     private val promotionTypeController: PromotionTypeController,
@@ -42,7 +39,7 @@ class ProductController(
             ?: throw IllegalArgumentException(String.format(PROMOTION_TYPE_NOT_FOUND_ERROR, promotionTypeName))
         return Product(
             name = name,
-            promotionProduct = PromotionalProduct(
+            promotionProduct = PromotionProduct(
                 price = price.toInt(),
                 _quantity = quantity.toInt(),
                 _promotionType = promotionType
@@ -55,7 +52,7 @@ class ProductController(
         return Product(
             name = name,
             promotionProduct = null,
-            nonPromotionProduct = NonPromotionalProduct(
+            nonPromotionProduct = NonPromotionProduct(
                 price = price.toInt(),
                 _quantity = quantity.toInt()
             )

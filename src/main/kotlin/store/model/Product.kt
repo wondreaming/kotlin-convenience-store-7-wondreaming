@@ -2,6 +2,6 @@ package store.model
 
 class Product(
     val name: String,
-    val promotionProduct: PromotionalProduct?,
-    val nonPromotionProduct: NonPromotionalProduct?,
+    val promotionProduct: PromotionProduct?,
+    val nonPromotionProduct: NonPromotionProduct?,
 )
