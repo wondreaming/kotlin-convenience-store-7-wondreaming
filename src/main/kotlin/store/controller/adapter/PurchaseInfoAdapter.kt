@@ -5,7 +5,7 @@ import store.model.PurchaseInfo
 class PurchaseInfoAdapter(
     val purchaseInput: String
 ) {
-    val purchaseItems = purchaseInput.split(",").map { it.trim() }
+    private val purchaseItems = purchaseInput.split(DELIMITER).map { it.trim() }
 
     fun adaptPurchaseInfo(): List<PurchaseInfo> {
         return purchaseItems.map { item ->
@@ -17,6 +17,7 @@ class PurchaseInfoAdapter(
     }
 
     companion object {
+        private const val DELIMITER = "-"
         private const val OPEN_BRACKET = "["
         private const val CLOSE_BRACKET = "]"
         private const val HYPHEN_DELIMITER = "-"
