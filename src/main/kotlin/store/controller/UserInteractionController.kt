@@ -9,31 +9,31 @@ class UserInteractionController(
 ) {
     fun handlePurchaseInput(productsInfo: List<String>): String {
         outputView.showProductInfo(productsInfo)
-        val purchaseInput = inputView.getPurchaseInput()
+        val purchaseInput = inputView.getInput()
         return purchaseInput
     }
 
     fun handlePromotionConfirmation(name: String, quantity: Int): String {
         outputView.showPromotionAdditionalOffer(name, quantity)
-        val userInput = inputView.getPromotionConfirmation()
+        val userInput = inputView.getInput()
         return userInput
     }
 
     fun handleFullPriceConfirmation(name: String, quantity: Int): String {
         outputView.showPromotionStockShortage(name, quantity)
-        val userInput = inputView.getFullPriceConfirmation()
+        val userInput = inputView.getInput()
         return userInput
     }
 
     fun handleMembershipDiscount(): String {
         outputView.showMembershipDiscount()
-        val userInput = inputView.getMembershipDiscount()
+        val userInput = inputView.getInput()
         return userInput
     }
 
     fun handleAdditionalPurchase(): String {
         outputView.showAdditionalPurchase()
-        val userInput = inputView.getAdditionalPurchase()
+        val userInput = inputView.getInput()
         return userInput
     }
 }
