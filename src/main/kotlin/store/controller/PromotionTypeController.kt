@@ -5,15 +5,15 @@ import store.util.DateUtils.stringToLocalDate
 import java.io.File
 
 class PromotionTypeController {
-    private val promotionFilePath = "src/main/resources/promotions.md"
+    private val promotionFilePath = PROMOTION_FILE_PATH
 
     fun loadPromotionType(): List<PromotionType> =
         File(promotionFilePath).readLines()
-            .filterNot { it.startsWith("name") }
+            .filterNot { it.startsWith(HEADER_NAME) }
             .map { parsePromotionType(it) }
 
     private fun parsePromotionType(line: String): PromotionType {
-        val (name, buyQuantity, freeQuantity, startDate, endDate) = line.split(",")
+        val (name, buyQuantity, freeQuantity, startDate, endDate) = line.split(DELIMITER)
         return PromotionType(
             name = name,
             buyQuantity = buyQuantity.toInt(),
@@ -21,5 +21,11 @@ class PromotionTypeController {
             startDate = stringToLocalDate(startDate),
             endDate = stringToLocalDate(endDate),
         )
+    }
+
+    companion object {
+        private const val PROMOTION_FILE_PATH = "src/main/resources/promotions.md"
+        private const val HEADER_NAME = "name"
+        private const val DELIMITER = ","
     }
 }
