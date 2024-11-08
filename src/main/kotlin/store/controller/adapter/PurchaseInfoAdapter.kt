@@ -3,7 +3,7 @@ package store.controller.adapter
 import store.model.PurchaseInfo
 
 class PurchaseInfoAdapter(
-    val purchaseInput: String
+    private val purchaseInput: String
 ) {
     private val purchaseItems = purchaseInput.split(DELIMITER).map { it.trim() }
 
@@ -17,7 +17,7 @@ class PurchaseInfoAdapter(
     }
 
     companion object {
-        private const val DELIMITER = "-"
+        private const val DELIMITER = ","
         private const val OPEN_BRACKET = "["
         private const val CLOSE_BRACKET = "]"
         private const val HYPHEN_DELIMITER = "-"
