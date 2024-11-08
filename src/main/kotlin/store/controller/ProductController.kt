@@ -13,17 +13,17 @@ class ProductController(
 ) {
     private val productsFilePath = PRODUCTS_FILE_PATH
 
-    fun loadProducts(): List<Product> =
+    fun loadProducts(): Map<String, Product> =
         File(productsFilePath).readLines()
             .filterNot { it.startsWith(HEADER_NAME) }
             .map { parseProduct(it) }
+            .associateBy { it.name }
 
     private fun parseProduct(line: String): Product {
         val (name, price, quantity, promotionTypeName) = line.split(DELIMITER)
         return when {
-            promotionTypeName != NO_PROMOTION_LABEL -> {
+            promotionTypeName != NO_PROMOTION_LABEL ->
                 parsePromotionalProduct(name, price, quantity, promotionTypeName)
-            }
 
             else -> parseNonPromotionalProduct(name, price, quantity)
         }
