@@ -6,14 +6,26 @@ import store.model.PurchaseInfo
 class PurchaseController(
     private val userInteractionController: UserInteractionController,
 ) {
-    fun checkPromotionPurchase(purchaseInfo: List<PurchaseInfo>, products: Map<String, Product>){
-        purchaseInfo.forEach { purchaseInfo ->
-            val product = products[purchaseInfo.name]
-            val promotionProduct = product!!.promotionProduct
-            if (promotionProduct != null && promotionProduct.isPromotionActive()) {
-                val missingQuality = promotionProduct.missingPromotionQuantity(purchaseInfo.quantity)
-                if (missingQuality > 0) userInteractionController.handlePromotionConfirmation(purchaseInfo.name, missingQuality)
+    fun checkPromotionPurchase(purchaseInfos: List<PurchaseInfo>, products: Map<String, Product>) {
+        purchaseInfos.forEach { info ->
+            val product = products[info.name] ?: return@forEach
+            if (isPromotionActive(product) && hasMissingQuantity(product, info.quantity)) {
+                val missingQuantity = product.promotionProduct!!.missingPromotionQuantity(info.quantity)
+                userInteractionController.handlePromotionConfirmation(info.name, missingQuantity)
             }
         }
+    }
+
+    private fun isPromotionActive(product: Product): Boolean {
+        return product.promotionProduct?.isPromotionActive() == true
+    }
+
+    private fun hasMissingQuantity(product: Product, quantity: Int): Boolean {
+        val promotionProduct = product.promotionProduct ?: return false
+        return promotionProduct.missingPromotionQuantity(quantity) > ZERO
+    }
+
+    companion object {
+        private const val ZERO = 0
     }
 }
