@@ -7,8 +7,6 @@ class UserInputValidator(
 ) {
     fun validateUserInput() {
         require(userInput.isNotEmpty()) { EMPTY_INPUT.errorMessage }
-        require(userInput != "y" && userInput != "n") { LOWERCASE.errorMessage }
-        require(userInput != "네" && userInput != "아니요") { KOREAN.errorMessage }
-        require(userInput != "Y" && userInput != "N") { INVALID_CHAR.errorMessage }
+        require(userInput == "Y" || userInput == "N") { INVALID_CHAR.errorMessage }
     }
 }
