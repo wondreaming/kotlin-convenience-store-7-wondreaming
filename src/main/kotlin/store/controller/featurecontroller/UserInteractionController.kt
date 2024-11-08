@@ -1,4 +1,4 @@
-package store.controller
+package store.controller.featurecontroller
 
 import store.view.InputView
 import store.view.OutputView

@@ -1,4 +1,4 @@
-package store.controller
+package store.controller.featurecontroller
 
 import store.model.PromotionType
 import store.util.DateUtils.stringToLocalDateTime

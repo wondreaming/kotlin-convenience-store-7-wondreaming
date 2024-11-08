@@ -1,4 +1,4 @@
-package store.controller
+package store.controller.featurecontroller
 
 import store.controller.validator.userInput.UserInputValidator
 import store.model.Membership
