@@ -1,7 +1,7 @@
 package store.controller
 
 import store.model.PromotionType
-import store.util.DateUtils.stringToLocalDate
+import store.util.DateUtils.stringToLocalDateTime
 import java.io.File
 
 class PromotionTypeController {
@@ -18,8 +18,8 @@ class PromotionTypeController {
             name = name,
             buyQuantity = buyQuantity.toInt(),
             freeQuantity = freeQuantity.toInt(),
-            startDate = stringToLocalDate(startDate),
-            endDate = stringToLocalDate(endDate),
+            startDate = stringToLocalDateTime(startDate),
+            endDate = stringToLocalDateTime(endDate),
         )
     }
 
