@@ -2,6 +2,7 @@ package store.controller
 
 import store.controller.validator.userInput.UserInputValidator
 import store.model.Product
+import store.model.PromotionProduct
 import store.model.PurchaseInfo
 
 class PurchaseController(
@@ -10,50 +11,56 @@ class PurchaseController(
 ) {
     fun checkPromotionPurchase(purchaseInfos: List<PurchaseInfo>, products: Map<String, Product>): List<PurchaseInfo> {
         purchaseInfos.forEach { info ->
-            val product = products[info.name] ?: return@forEach
-            if (isPromotionActive(product) && hasMissingQuantity(product, info.quantity)) {
-                val missingQuantity = product.promotionProduct!!.missingPromotionQuantity(info.quantity)
-                val userResponse = userInteractionController.handlePromotionConfirmation(info.name, missingQuantity)
-
-                if (userResponse != null) {
-                    userInputValidator.validateUserInput(userResponse)
-                    if (userResponse == "Y") {
-                        info.addQuantity(missingQuantity)
-                    }
+            products[info.name]?.takeIf { isPromotionActive(it) && hasMissingQuantity(it, info.quantity) }
+                ?.let { product ->
+                    handlePromotionConfirmation(info, product)
                 }
-            }
         }
         return purchaseInfos
     }
 
-    fun checkPromotionStockSufficient(purchaseInfos: List<PurchaseInfo>, products: Map<String, Product>): List<PurchaseInfo> {
+    fun checkPromotionStockSufficient(
+        purchaseInfos: List<PurchaseInfo>,
+        products: Map<String, Product>
+    ): List<PurchaseInfo> {
         purchaseInfos.forEach { info ->
-            val product = products[info.name] ?: return@forEach
-            if (product.promotionProduct?.isPromotionActive() == true && !(product.promotionProduct?.isPromotionStockSufficient(info.quantity))!!) {
-                val quantity = info.quantity - product.promotionProduct?.quantity!!
-                val userResponse = userInteractionController.handleFullPriceConfirmation(info.name, quantity)
-                if (userResponse != null) {
-                    userInputValidator.validateUserInput(userResponse)
-                    if (userResponse == "N") {
-                        info.minusQuantity(quantity)
-                    }
+            products[info.name]?.promotionProduct
+                ?.takeIf { it.isPromotionActive() && !it.isPromotionStockSufficient(info.quantity) }
+                ?.let { promotionProduct ->
+                    handleStockConfirmation(info, promotionProduct)
                 }
-            }
         }
         return purchaseInfos
     }
 
-    private fun isPromotionActive(product: Product): Boolean {
-        return product.promotionProduct?.isPromotionActive() == true
+    private fun handlePromotionConfirmation(info: PurchaseInfo, product: Product) {
+        val missingQuantity = product.promotionProduct!!.missingPromotionQuantity(info.quantity)
+        val userResponse = userInteractionController.handlePromotionConfirmation(info.name, missingQuantity)
+        userResponse.let {
+            userInputValidator.validateUserInput(it)
+            if (it == YES) info.addQuantity(missingQuantity)
+        }
     }
 
-    private fun hasMissingQuantity(product: Product, quantity: Int): Boolean {
-        val promotionProduct = product.promotionProduct ?: return false
-        return promotionProduct.missingPromotionQuantity(quantity) > ZERO
+    private fun handleStockConfirmation(info: PurchaseInfo, promotionProduct: PromotionProduct) {
+        val quantityNeeded = info.quantity - promotionProduct.quantity
+        val userResponse = userInteractionController.handleFullPriceConfirmation(info.name, quantityNeeded)
+
+        userResponse.let {
+            userInputValidator.validateUserInput(it)
+            if (it == NO) info.minusQuantity(quantityNeeded)
+        }
     }
 
+    private fun isPromotionActive(product: Product): Boolean =
+        product.promotionProduct?.isPromotionActive() == true
+
+    private fun hasMissingQuantity(product: Product, quantity: Int): Boolean =
+        product.promotionProduct?.missingPromotionQuantity(quantity)?.let { it > ZERO } ?: false
 
     companion object {
         private const val ZERO = 0
+        private const val YES = "Y"
+        private const val NO = "N"
     }
 }
