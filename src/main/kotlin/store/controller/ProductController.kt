@@ -15,7 +15,8 @@ class ProductController(
         val products = mutableMapOf<String, Product>()
         File(PRODUCTS_FILE_PATH).readLines()
             .filterNot { it.startsWith(HEADER_NAME) }
-            .forEach { line -> processLine(line, products)
+            .forEach { line ->
+                processLine(line, products)
             }
         return products
     }
@@ -45,11 +46,11 @@ class ProductController(
         promotionTypeName: String
     ) {
         if (promotionTypeName != NO_PROMOTION_LABEL && product.promotionProduct == null) {
-            product.promotionProduct = parsePromotionProduct(price, quantity, promotionTypeName)
+            product.updatePromotionProduct(parsePromotionProduct(price, quantity, promotionTypeName))
             return
         }
         if (promotionTypeName == NO_PROMOTION_LABEL && product.nonPromotionProduct == null) {
-            product.nonPromotionProduct = parseNonPromotionProduct(price, quantity)
+            product.updateNonPromotionProduct(parseNonPromotionProduct(price, quantity))
         }
     }
 
