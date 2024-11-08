@@ -11,7 +11,7 @@ import store.model.Product
 
 class PurchaseInputValidator(
     private val purchaseInput: String,
-    private val products: List<Product>,
+    private val products: Map<String, Product>,
 ) {
     private val splitPurchaseItems: List<String> = purchaseInput.split(DELIMITER).map { it.trim() }
 
@@ -50,7 +50,7 @@ class PurchaseInputValidator(
     }
 
     private fun checkStock(name: String, quantity: String) {
-        val product = products.find { it.name == name }
+        val product = products.values.find { it.name == name }
         require(product!!.checkStock(quantity.toInt())) { EXCEEDS_STOCK.errorMessage }
     }
 

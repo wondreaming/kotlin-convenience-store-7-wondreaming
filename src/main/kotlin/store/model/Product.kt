@@ -11,8 +11,8 @@ class Product(
     }
 
     companion object {
-        fun isProductAvailable(name: String, products: List<Product>): Boolean {
-            return products.any { it.name == name }
+        fun isProductAvailable(name: String, products: Map<String, Product>): Boolean {
+            return products.containsKey(name)
         }
     }
 }

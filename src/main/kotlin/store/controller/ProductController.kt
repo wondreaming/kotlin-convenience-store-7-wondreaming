@@ -67,7 +67,7 @@ class ProductController(
         )
     }
 
-    fun adaptProducts(products: List<Product>): List<String> {
+    fun adaptProducts(products: Map<String, Product>): List<String> {
         return productAdapter.adaptProducts(products)
     }
 

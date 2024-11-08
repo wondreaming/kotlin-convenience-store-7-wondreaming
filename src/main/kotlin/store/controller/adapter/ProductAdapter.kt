@@ -4,13 +4,13 @@ import store.model.Product
 import java.util.*
 
 class ProductAdapter {
-    fun adaptProducts(products: List<Product>): List<String> {
+    fun adaptProducts(products: Map<String, Product>): List<String> {
         return products.map { product ->
-            val price = product.promotionProduct?.price ?: product.nonPromotionProduct?.price
+            val price = product.value.promotionProduct?.price ?: product.value.nonPromotionProduct?.price
             val displayPrice = String.format(Locale.KOREA, PRICE_FORMAT_PATTERN, price) + CURRENCY_SYMBOL
-            val displayQuantity = getDisplayQuantity(product)
-            val displayPromotionType: String = getPromotionLabel(product)
-            String.format(PRODUCT_DISPLAY_FORMAT, product.name, displayPrice, displayQuantity, displayPromotionType)
+            val displayQuantity = getDisplayQuantity(product.value)
+            val displayPromotionType: String = getPromotionLabel(product.value)
+            String.format(PRODUCT_DISPLAY_FORMAT, product.key, displayPrice, displayQuantity, displayPromotionType)
         }
     }
 
