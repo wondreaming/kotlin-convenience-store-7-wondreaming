@@ -11,44 +11,56 @@ class ProductController(
     private val promotionTypeController: PromotionTypeController,
     private val productAdapter: ProductAdapter,
 ) {
-    private val productsFilePath = PRODUCTS_FILE_PATH
-
-    fun loadProducts(): Map<String, Product> =
-        File(productsFilePath).readLines()
+    fun loadProducts(): Map<String, Product> {
+        val products = mutableMapOf<String, Product>()
+        File(PRODUCTS_FILE_PATH).readLines()
             .filterNot { it.startsWith(HEADER_NAME) }
-            .map { parseProduct(it) }
-            .associateBy { it.name }
+            .forEach { line -> processLine(line, products)
+            }
+        return products
+    }
 
-    private fun parseProduct(line: String): Product {
+    private fun processLine(line: String, products: MutableMap<String, Product>) {
         val (name, price, quantity, promotionTypeName) = line.split(DELIMITER)
-        return when {
-            promotionTypeName != NO_PROMOTION_LABEL ->
-                parsePromotionalProduct(name, price, quantity, promotionTypeName)
+        if (!products.containsKey(name)) {
+            products[name] = createProduct(name, price, quantity, promotionTypeName)
+            return
+        }
+        updateExistingProduct(products[name]!!, price, quantity, promotionTypeName)
+    }
 
-            else -> parseNonPromotionalProduct(name, price, quantity)
+    private fun createProduct(name: String, price: String, quantity: String, promotionTypeName: String): Product {
+        if (promotionTypeName != NO_PROMOTION_LABEL) {
+            val promoProduct = parsePromotionProduct(price, quantity, promotionTypeName)
+            return Product(name, promoProduct, null)
+        }
+        val nonPromoProduct = parseNonPromotionProduct(price, quantity)
+        return Product(name, null, nonPromoProduct)
+    }
+
+    private fun updateExistingProduct(
+        product: Product,
+        price: String,
+        quantity: String,
+        promotionTypeName: String
+    ) {
+        if (promotionTypeName != NO_PROMOTION_LABEL && product.promotionProduct == null) {
+            product.promotionProduct = parsePromotionProduct(price, quantity, promotionTypeName)
+            return
+        }
+        if (promotionTypeName == NO_PROMOTION_LABEL && product.nonPromotionProduct == null) {
+            product.nonPromotionProduct = parseNonPromotionProduct(price, quantity)
         }
     }
 
-    private fun parsePromotionalProduct(
-        name: String,
+    private fun parsePromotionProduct(
         price: String,
         quantity: String,
         promotionTypeName: String,
-    ): Product {
+    ): PromotionProduct {
         val promotionType = findPromotionType(promotionTypeName)
-        return createProductWithPromotion(name, price.toInt(), quantity.toInt(), promotionType)
+        return PromotionProduct(price.toInt(), quantity.toInt(), promotionType)
     }
-
-    private fun createProductWithPromotion(
-        name: String,
-        price: Int,
-        quantity: Int,
-        promotionType: PromotionType
-    ) = Product(
-        name = name,
-        promotionProduct = PromotionProduct(price, quantity, promotionType),
-        nonPromotionProduct = null
-    )
 
     private fun findPromotionType(promotionTypeName: String): PromotionType {
         val promotionTypes = promotionTypeController.loadPromotionType()
@@ -56,15 +68,8 @@ class ProductController(
             ?: throw IllegalArgumentException(String.format(PROMOTION_TYPE_NOT_FOUND_ERROR, promotionTypeName))
     }
 
-    private fun parseNonPromotionalProduct(name: String, price: String, quantity: String): Product {
-        return Product(
-            name = name,
-            promotionProduct = null,
-            nonPromotionProduct = NonPromotionProduct(
-                price = price.toInt(),
-                _quantity = quantity.toInt()
-            )
-        )
+    private fun parseNonPromotionProduct(price: String, quantity: String): NonPromotionProduct {
+        return NonPromotionProduct(price.toInt(), quantity.toInt())
     }
 
     fun adaptProducts(products: Map<String, Product>): List<String> {
@@ -75,7 +80,7 @@ class ProductController(
         private const val PRODUCTS_FILE_PATH = "src/main/resources/products.md"
         private const val HEADER_NAME = "name"
         private const val DELIMITER = ","
-        private const val PROMOTION_TYPE_NOT_FOUND_ERROR = "PromotionType '%s' not found"
+        private const val PROMOTION_TYPE_NOT_FOUND_ERROR = "프로모션 '%s'는 찾을 수 없습니다."
         private const val NO_PROMOTION_LABEL = "null"
 
     }
