@@ -19,4 +19,10 @@ data class PromotionProduct(
         return isPromotionActiveToday
     }
 
+    // 고객이 프로모션 제품 수량보다 적게 가져옴-> 수량 전달
+    fun missingPromotionQuantity(buyQuantity: Int): Int {
+        val promotionQuantity = _promotionType.buyQuantity + _promotionType.freeQuantity
+        val missingQuality = buyQuantity % promotionQuantity
+        return if (missingQuality == 0) 0 else promotionQuantity - missingQuality
+    }
 }
