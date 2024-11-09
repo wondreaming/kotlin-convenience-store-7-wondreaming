@@ -42,7 +42,9 @@ class ProductAdapter {
         }
     }
 
-    private fun getPromotionLabel(promotionType: PromotionType): String = promotionType.name
+    private fun getPromotionLabel(promotionType: PromotionType): String {
+        return promotionType.name.takeIf { promotionType.isPromotionActive() } ?: NO_PROMOTION_LABEL
+    }
 
     companion object {
         private const val PRICE_FORMAT_PATTERN = "%,d"
