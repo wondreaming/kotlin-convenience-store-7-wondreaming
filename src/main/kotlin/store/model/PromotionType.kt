@@ -17,5 +17,5 @@ class PromotionType(
         return isPromotionActiveToday
     }
 
-    fun calculateBonusQuantity(purchasedQuantity: Int): Int = (purchasedQuantity / buyQuantity) * freeQuantity
+
 }

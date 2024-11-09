@@ -13,7 +13,10 @@ class PurchaseController(
         purchaseInfos.forEach { info ->
             products[info.name]?.takeIf { isPromotionActive(it) && hasMissingQuantity(it, info.quantity) }
                 ?.let { product ->
-                    handlePromotionConfirmation(info, product)
+                    if (product.promotionProduct!!.isPromotionStockSufficient(info.quantity)) handlePromotionConfirmation(
+                        info,
+                        product
+                    )
                 }
         }
         return purchaseInfos
@@ -38,7 +41,8 @@ class PurchaseController(
 
         purchaseInfos.forEach { info ->
             products[info.name]?.promotionProduct?.takeIf { it.isPromotionActive() }?.let { promotionProduct ->
-                val bonusQuantity = promotionProduct.promotionType.calculateBonusQuantity(info.quantity)
+//                val bonusQuantity = promotionProduct.promotionType.calculateBonusQuantity(promotionProduct.calculateEligiblePromotionQuantity())
+                val bonusQuantity = promotionProduct.calculateBonusQuantity(info.quantity)
                 if (bonusQuantity > 0) bonusProducts.add(PurchaseInfo(info.name, bonusQuantity))
             }
         }
@@ -55,7 +59,7 @@ class PurchaseController(
     }
 
     private fun handleStockConfirmation(info: PurchaseInfo, promotionProduct: PromotionProduct) {
-        val quantityNeeded = info.quantity - promotionProduct.quantity
+        val quantityNeeded = info.quantity - promotionProduct.calculateEligiblePromotionQuantity()
         val userResponse = userInteractionController.handleFullPriceConfirmation(info.name, quantityNeeded)
 
         userResponse.let {
