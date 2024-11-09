@@ -32,11 +32,11 @@ class ProductController(
 
     private fun createProduct(name: String, price: String, quantity: String, promotionTypeName: String): Product {
         if (promotionTypeName != NO_PROMOTION_LABEL) {
-            val promoProduct = parsePromotionProduct(price, quantity, promotionTypeName)
-            return Product(name, promoProduct, null)
+            val promotionProduct = parsePromotionProduct(price, quantity, promotionTypeName)
+            return Product(name, promotionProduct, null)
         }
-        val nonPromoProduct = parseNonPromotionProduct(price, quantity)
-        return Product(name, null, nonPromoProduct)
+        val nonPromotionProduct = parseNonPromotionProduct(price, quantity)
+        return Product(name, null, nonPromotionProduct)
     }
 
     private fun updateExistingProduct(
