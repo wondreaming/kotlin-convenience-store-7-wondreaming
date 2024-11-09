@@ -33,6 +33,18 @@ class PurchaseController(
         return purchaseInfos
     }
 
+    fun checkBonusProducts(purchaseInfos: List<PurchaseInfo>, products: Map<String, Product>): List<PurchaseInfo> {
+        val bonusProducts = mutableListOf<PurchaseInfo>()
+
+        purchaseInfos.forEach { info ->
+            products[info.name]?.promotionProduct?.takeIf { it.isPromotionActive() }?.let { promotionProduct ->
+                val bonusQuantity = promotionProduct.promotionType.calculateBonusQuantity(info.quantity)
+                if (bonusQuantity > 0) bonusProducts.add(PurchaseInfo(info.name, bonusQuantity))
+            }
+        }
+        return bonusProducts
+    }
+
     private fun handlePromotionConfirmation(info: PurchaseInfo, product: Product) {
         val missingQuantity = product.promotionProduct!!.missingPromotionQuantity(info.quantity)
         val userResponse = userInteractionController.handlePromotionConfirmation(info.name, missingQuantity)
@@ -50,6 +62,17 @@ class PurchaseController(
             userInputValidator.validateUserInput(it)
             if (it == NO) info.minusQuantity(quantityNeeded)
         }
+    }
+
+
+    fun handleAdditionalPurchaseConfirmation(): Boolean {
+        val userResponse = userInteractionController.handleAdditionalPurchase()
+
+        userResponse.let {
+            userInputValidator.validateUserInput(it)
+            if (it == YES) return true
+        }
+        return false
     }
 
     private fun isPromotionActive(product: Product): Boolean =
