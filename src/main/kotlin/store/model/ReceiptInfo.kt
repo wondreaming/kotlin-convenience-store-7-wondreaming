@@ -1,6 +1,6 @@
 package store.model
 
-data class Receipt(
+data class ReceiptInfo(
     val items: List<PurchaseInfo>,
     val totalQuantity: Int,
     val totalAmount: Int,
