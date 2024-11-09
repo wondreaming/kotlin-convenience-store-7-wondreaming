@@ -83,18 +83,20 @@ class StoreController(
 
                     )
             )
-            if (receiptInfo.promotionDiscount != 0) {
+
                 println(String.format("%-8s %,8d", "행사할인", receiptInfo.promotionDiscount))
-            }
-            if (receiptInfo.membershipDiscount != 0) {
+
                 println(String.format("%-8s %,8d", "멤버십할인", receiptInfo.membershipDiscount))
-            }
+
 
             println(String.format("%-8s %,8d", "내실돈", receiptInfo.finalAmount))
 
-            again = purchaseController.handleAdditionalPurchaseConfirmation()
             // storeProducts수량 조절
-
+            finalPurchaseInfo.forEach { purchase ->
+                val product = storeProducts[purchase.name]
+                product?.reduceQuantity(purchase.quantity)
+            }
+            again = purchaseController.handleAdditionalPurchaseConfirmation()
         }
 
     }
