@@ -11,6 +11,7 @@ import store.model.PurchaseInfo
 import store.model.ReceiptInfo
 import store.view.InputView
 import store.view.OutputView
+import java.io.File
 
 class StoreController(
     private val inputView: InputView = InputView(),
@@ -50,6 +51,7 @@ class StoreController(
         val finalPurchaseInfo = processPromotionAndStock(purchaseInfo, storeProducts)
         generateAndDisplayReceipt(finalPurchaseInfo, storeProducts)
         updateProductQuantities(finalPurchaseInfo, storeProducts)
+        saveUpdatedProductsToMarkdown(storeProducts)
     }
 
     private fun validatePurchaseInput(displayProductsInfo:List<String>, storeProducts: Map<String, Product>): String {
@@ -93,5 +95,29 @@ class StoreController(
         finalPurchaseInfo.forEach { purchase ->
             storeProducts[purchase.name]?.reduceQuantity(purchase.quantity)
         }
+
+    }
+
+    private fun saveUpdatedProductsToMarkdown(storeProducts: Map<String, Product>) {
+        val header = "name,price,quantity,promotion"
+        val lines = mutableListOf(header)
+
+        storeProducts.forEach { (name, product) ->
+            val promotionProduct = product.promotionProduct
+            val nonPromotionProduct = product.nonPromotionProduct
+
+            // 프로모션 제품이 있는 경우
+            if (promotionProduct != null) {
+                lines.add(
+                    "$name,${promotionProduct.price},${promotionProduct.quantity},${promotionProduct.promotionType.name}"
+                )
+            }
+            if (nonPromotionProduct != null) {
+                lines.add(
+                    "$name,${nonPromotionProduct.price},${nonPromotionProduct.quantity},null"
+                )
+            }
+        }
+        File("src/main/resources/products.md").writeText(lines.joinToString("\n"))
     }
 }
