@@ -1,5 +1,8 @@
 package store.model
 
+import kotlin.math.max
+import kotlin.math.min
+
 data class ReceiptInfo(
     private var _items: List<PurchaseInfo>,
     private var _totalAmount: Int = 0,
@@ -57,8 +60,9 @@ data class ReceiptInfo(
     }
 
     private fun calculateMmembershipDiscount() {
-        if (membership.isMember && membership.dailyLimitUsed < 8000) {
-            membershipDiscount = (Math.floor(((_totalAmount - _promotionDiscount) * 0.3) / 1000.0) * 1000).toInt()
+        if (membership.isMember) {
+            val calculatedDisCount = (Math.floor(((_totalAmount - _promotionDiscount) * 0.3) / 1000.0) * 1000).toInt()
+            membershipDiscount = min(calculatedDisCount, 8000)
         }
     }
 
