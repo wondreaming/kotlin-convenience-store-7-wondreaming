@@ -27,7 +27,7 @@ data class PromotionProduct(
     }
 
     // 프로모션 제품이 요청한 수량보다 충분한 지 검사
-    fun isPromotionStockSufficient(requiredQuantity: Int): Boolean = _quantity > requiredQuantity
+    fun isPromotionStockSufficient(requiredQuantity: Int): Boolean = _quantity >= requiredQuantity
 
     // 프로모션이 가능한 제품 갯수 계산
     fun calculateEligiblePromotionQuantity(): Int {

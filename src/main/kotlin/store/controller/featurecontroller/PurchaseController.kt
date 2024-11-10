@@ -13,7 +13,7 @@ class PurchaseController(
         purchaseInfos.forEach { info ->
             products[info.name]?.takeIf { isPromotionActive(it) && hasMissingQuantity(it, info.quantity) }
                 ?.let { product ->
-                    if (product.promotionProduct!!.isPromotionStockSufficient(info.quantity)) handlePromotionConfirmation(
+                    if (product.promotionProduct!!.isPromotionStockSufficient(info.quantity + product.promotionProduct!!.promotionType.freeQuantity)) handlePromotionConfirmation(
                         info,
                         product
                     )
@@ -27,8 +27,10 @@ class PurchaseController(
         products: Map<String, Product>
     ): List<PurchaseInfo> {
         purchaseInfos.forEach { info ->
-            products[info.name]?.promotionProduct
-                ?.takeIf { it.isPromotionActive() && !it.isPromotionStockSufficient(info.quantity) }
+            products[info.name]
+                ?.takeIf { product -> product.checkStock(info.quantity) }
+                ?.promotionProduct
+                ?.takeIf { it.isPromotionActive() }
                 ?.let { promotionProduct ->
                     handleStockConfirmation(info, promotionProduct)
                 }
@@ -51,6 +53,7 @@ class PurchaseController(
 
     private fun handlePromotionConfirmation(info: PurchaseInfo, product: Product) {
         val missingQuantity = product.promotionProduct!!.missingPromotionQuantity(info.quantity)
+        println(missingQuantity)
         while (true) {
             try {
                 val userResponse = userInteractionController.handlePromotionConfirmation(info.name, missingQuantity)
@@ -67,7 +70,7 @@ class PurchaseController(
 
     private fun handleStockConfirmation(info: PurchaseInfo, promotionProduct: PromotionProduct) {
         val quantityNeeded = info.quantity - promotionProduct.calculateEligiblePromotionQuantity()
-        while (true) {
+        while (quantityNeeded >= 0) {
             try {
                 val userResponse = userInteractionController.handleFullPriceConfirmation(info.name, quantityNeeded)
                 userResponse.let {
