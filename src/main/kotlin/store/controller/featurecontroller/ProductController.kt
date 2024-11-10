@@ -33,7 +33,8 @@ class ProductController(
             val promotionTypes = findPromotionType(promotionTypeName)
             if (promotionTypes.isPromotionActive()) {
                 val promotionProduct = parsePromotionProduct(price, quantity, promotionTypeName)
-                return Product(name, promotionProduct, null)
+                val nonPromotionProduct = parseNonPromotionProduct(price, "0")
+                return Product(name, promotionProduct, nonPromotionProduct)
 
             }
         }
