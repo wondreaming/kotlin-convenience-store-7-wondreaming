@@ -8,12 +8,18 @@ class MembershipController(
     private val userInputValidator: UserInputValidator,
 ) {
     fun applyMembershipDiscount(membership: Membership): Membership {
-        val userResponse = userInteractionController.handleMembershipDiscount()
-        userResponse.let {
-            userInputValidator.validateUserInput(it)
-            if (it == YES) membership.activateMembership()
+        while (true) {
+            try {
+                val userResponse = userInteractionController.handleMembershipDiscount()
+                userResponse.let {
+                    userInputValidator.validateUserInput(it)
+                    if (it == YES) membership.activateMembership()
+                }
+                return membership
+            } catch (e: IllegalArgumentException) {
+                println(e.message)
+            }
         }
-        return membership
     }
 
     companion object {

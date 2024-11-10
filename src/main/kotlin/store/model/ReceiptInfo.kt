@@ -58,8 +58,6 @@ data class ReceiptInfo(
 
     private fun calculateMmembershipDiscount() {
         if (membership.isMember && membership.dailyLimitUsed < 8000) {
-            println(_totalAmount)
-            println(_promotionDiscount)
             membershipDiscount = -(Math.floor(((_totalAmount + _promotionDiscount) * 0.3) / 1000.0) * 1000).toInt()
         }
     }

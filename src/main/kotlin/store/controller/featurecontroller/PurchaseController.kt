@@ -51,32 +51,50 @@ class PurchaseController(
 
     private fun handlePromotionConfirmation(info: PurchaseInfo, product: Product) {
         val missingQuantity = product.promotionProduct!!.missingPromotionQuantity(info.quantity)
-        val userResponse = userInteractionController.handlePromotionConfirmation(info.name, missingQuantity)
-        userResponse.let {
-            userInputValidator.validateUserInput(it)
-            if (it == YES) info.addQuantity(missingQuantity)
+        while (true) {
+            try {
+                val userResponse = userInteractionController.handlePromotionConfirmation(info.name, missingQuantity)
+                userResponse.let {
+                    userInputValidator.validateUserInput(it)
+                    if (it == YES) info.addQuantity(missingQuantity)
+                }
+                return
+            } catch (e: IllegalArgumentException) {
+                println(e.message)
+            }
         }
     }
 
     private fun handleStockConfirmation(info: PurchaseInfo, promotionProduct: PromotionProduct) {
         val quantityNeeded = info.quantity - promotionProduct.calculateEligiblePromotionQuantity()
-        val userResponse = userInteractionController.handleFullPriceConfirmation(info.name, quantityNeeded)
-
-        userResponse.let {
-            userInputValidator.validateUserInput(it)
-            if (it == NO) info.minusQuantity(quantityNeeded)
+        while (true) {
+            try {
+                val userResponse = userInteractionController.handleFullPriceConfirmation(info.name, quantityNeeded)
+                userResponse.let {
+                    userInputValidator.validateUserInput(it)
+                    if (it == NO) info.minusQuantity(quantityNeeded)
+                }
+                return
+            } catch (e: IllegalArgumentException) {
+                println(e.message)
+            }
         }
     }
 
 
     fun handleAdditionalPurchaseConfirmation(): Boolean {
-        val userResponse = userInteractionController.handleAdditionalPurchase()
-
-        userResponse.let {
-            userInputValidator.validateUserInput(it)
-            if (it == YES) return true
+        while (true) {
+            try {
+                val userResponse = userInteractionController.handleAdditionalPurchase()
+                userResponse.let {
+                    userInputValidator.validateUserInput(it)
+                    if (it == YES) return true
+                }
+                return false
+            } catch (e: IllegalArgumentException) {
+                println(e.message)
+            }
         }
-        return false
     }
 
     private fun isPromotionActive(product: Product): Boolean =

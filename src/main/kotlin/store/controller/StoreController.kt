@@ -44,16 +44,24 @@ class StoreController(
 
     private fun handlePurchaseProcess(storeProducts: Map<String, Product>) {
         val displayProductsInfo = productAdapter.adaptProducts(storeProducts)
-        val purchaseInput = userInteractionController.handlePurchaseInput(displayProductsInfo)
-        validatePurchaseInput(purchaseInput, storeProducts)
+
+        val purchaseInput = validatePurchaseInput(displayProductsInfo, storeProducts)
         val purchaseInfo = adaptPurchaseInfo(purchaseInput)
         val finalPurchaseInfo = processPromotionAndStock(purchaseInfo, storeProducts)
         generateAndDisplayReceipt(finalPurchaseInfo, storeProducts)
         updateProductQuantities(finalPurchaseInfo, storeProducts)
     }
 
-    private fun validatePurchaseInput(purchaseInput: String, storeProducts: Map<String, Product>) {
-        PurchaseInputValidator(purchaseInput, storeProducts).validate()
+    private fun validatePurchaseInput(displayProductsInfo:List<String>, storeProducts: Map<String, Product>): String {
+        while (true) {
+            try {
+                val purchaseInput = userInteractionController.handlePurchaseInput(displayProductsInfo)
+                PurchaseInputValidator(purchaseInput, storeProducts).validate()
+                return purchaseInput
+            } catch (e: IllegalArgumentException) {
+                println(e.message)
+            }
+        }
     }
 
     private fun adaptPurchaseInfo(purchaseInput: String): List<PurchaseInfo> {
