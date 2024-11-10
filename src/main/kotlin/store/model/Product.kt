@@ -26,7 +26,7 @@ class Product(
 
     fun reduceQuantity(amount: Int) {
         var remainingAmount = amount
-        if (_promotionProduct != null && _promotionProduct!!.quantity > 0) {
+        if (_promotionProduct != null && _promotionProduct!!.isPromotionActive() && _promotionProduct!!.quantity > 0) {
             val reducedAmount = minOf(remainingAmount, _promotionProduct!!.quantity)
             _promotionProduct = _promotionProduct!!.copy(_quantity = promotionProduct!!.quantity - reducedAmount)
             remainingAmount -= reducedAmount
