@@ -9,17 +9,35 @@ class MembershipController(
 ) {
     fun applyMembershipDiscount(membership: Membership): Membership {
         while (true) {
-            try {
-                val userResponse = userInteractionController.handleMembershipDiscount()
-                userResponse.let {
-                    userInputValidator.validateUserInput(it)
-                    if (it == YES) membership.activateMembership()
-                }
+            val userResponse = getUserResponse()
+            if (isValidUserInput(userResponse)) {
+                activateMembershipIfYes(userResponse, membership)
                 return membership
-            } catch (e: IllegalArgumentException) {
-                println(e.message)
             }
         }
+    }
+
+    private fun getUserResponse(): String {
+        return try {
+            userInteractionController.handleMembershipDiscount()
+        } catch (e: IllegalArgumentException) {
+            println(e.message)
+            ""
+        }
+    }
+
+    private fun isValidUserInput(userResponse: String): Boolean {
+        return try {
+            userInputValidator.validateUserInput(userResponse)
+            true
+        } catch (e: IllegalArgumentException) {
+            println(e.message)
+            false
+        }
+    }
+
+    private fun activateMembershipIfYes(userResponse: String, membership: Membership) {
+        if (userResponse == YES) membership.activateMembership()
     }
 
     companion object {
