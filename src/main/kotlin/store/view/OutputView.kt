@@ -1,5 +1,7 @@
 package store.view
 
+import store.model.ReceiptInfo
+
 class OutputView {
     fun showProductInfo(productsInfo: List<String>) {
         println(WELCOME_MESSAGE)
@@ -24,6 +26,32 @@ class OutputView {
 
     fun showAdditionalPurchase() {
         println(ADDITIONAL_PURCHASE_MESSAGE)
+    }
+
+    fun showReceipt(receiptInfo: ReceiptInfo) {
+        println("==============W 편의점================")
+        println("%-15s %5s %8s".format("상품명", "수량", "금액"))
+        receiptInfo.items.forEach { item ->
+            val itemTotalAmount = receiptInfo.getItemPrice(item.name) * item.quantity
+            println(String.format("%-15s %5d %,8d", item.name, item.quantity, itemTotalAmount))
+        }
+        println("=============증\t\t정===============")
+        receiptInfo.bonusItems.forEach { bonusItem ->
+            println(String.format("%-8s %,8d", bonusItem.name, bonusItem.quantity))
+        }
+        println("====================================")
+        println(
+            String.format(
+                "%-15s %5d %,8d",
+                "총구매액",
+                receiptInfo.totalQuantity,
+                receiptInfo.totalAmount,
+
+                )
+        )
+        println(String.format("%-15s %,8d", "행사할인", receiptInfo.promotionDiscount))
+        println(String.format("%-15s %,8d", "멤버십할인", receiptInfo.membershipDiscount))
+        println(String.format("%-15s %,8d", "내실돈", receiptInfo.finalAmount))
     }
 
     companion object {

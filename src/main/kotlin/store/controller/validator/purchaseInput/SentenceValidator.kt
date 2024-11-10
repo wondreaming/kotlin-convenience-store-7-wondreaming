@@ -3,7 +3,10 @@ package store.controller.validator.purchaseInput
 import store.controller.validator.purchaseInput.PurchaseInputErrorType.N0_COMMA
 import store.controller.validator.purchaseInput.PurchaseInputErrorType.EMPTY_INPUT
 
-class SentenceValidator(private val sentence: String, private val itemCount: Int,) {
+class SentenceValidator(
+    private val sentence: String,
+    private val itemCount: Int,
+) {
     fun validate() {
         checkEmpty()
         checkIsDelimiter()

@@ -4,7 +4,9 @@ import store.controller.validator.purchaseInput.PurchaseInputErrorType.NOT_INTEG
 import store.controller.validator.purchaseInput.PurchaseInputErrorType.ZERO_AMOUNT
 import store.controller.validator.purchaseInput.PurchaseInputErrorType.NEGATIVE_NUMBER
 
-class QuantityValidator(private val quantity: String) {
+class QuantityValidator(
+    private val quantity: String,
+) {
     fun validate() {
         checkInteger()
         checkIsZero()

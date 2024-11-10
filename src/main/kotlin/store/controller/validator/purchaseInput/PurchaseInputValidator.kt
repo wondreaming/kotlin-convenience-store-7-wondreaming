@@ -1,11 +1,7 @@
-package store.controller.validator
+package store.controller.validator.purchaseInput
 
 import store.controller.validator.purchaseInput.PurchaseInputErrorType.DUPLICATE_PRODUCT
-import store.controller.validator.purchaseInput.ItemValidator
-import store.controller.validator.purchaseInput.NameValidator
 import store.controller.validator.purchaseInput.PurchaseInputErrorType.EXCEEDS_STOCK
-import store.controller.validator.purchaseInput.QuantityValidator
-import store.controller.validator.purchaseInput.SentenceValidator
 import store.model.Product
 
 
