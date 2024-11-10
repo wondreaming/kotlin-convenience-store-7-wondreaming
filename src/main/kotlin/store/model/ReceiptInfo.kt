@@ -61,7 +61,15 @@ data class ReceiptInfo(
 
     private fun calculateMmembershipDiscount() {
         if (membership.isMember) {
-            val calculatedDisCount = (Math.floor(((_totalAmount - _promotionDiscount) * 0.3) / 1000.0) * 1000).toInt()
+            var totalPromotionAmount = 0
+            bonusItems.forEach { item ->
+                val freeQuantity = storeProducts[item.name]?.promotionProduct?.promotionType?.freeQuantity!!
+                val buyQuantity = storeProducts[item.name]?.promotionProduct?.promotionType?.buyQuantity!!
+                val promotionQuantity = (item.quantity / freeQuantity) * (buyQuantity + freeQuantity)
+                val promotionAmount = promotionQuantity * storeProducts[item.name]?.promotionProduct!!.price
+                totalPromotionAmount += promotionAmount
+            }
+            val calculatedDisCount = ((_totalAmount - totalPromotionAmount) * 0.3).toInt()
             membershipDiscount = min(calculatedDisCount, 8000)
         }
     }
