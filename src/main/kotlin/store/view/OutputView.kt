@@ -49,9 +49,13 @@ class OutputView {
 
                 )
         )
-        println(String.format("%-15s %,8d", "행사할인", receiptInfo.promotionDiscount))
-        println(String.format("%-15s %,8d", "멤버십할인", receiptInfo.membershipDiscount))
+        println(String.format("%-15s %8s", "행사할인", formatDiscount(receiptInfo.promotionDiscount)))
+        println(String.format("%-15s %8s", "멤버십할인", formatDiscount(receiptInfo.membershipDiscount)))
         println(String.format("%-15s %,8d", "내실돈", receiptInfo.finalAmount))
+    }
+
+    private fun formatDiscount(discount: Int): String {
+        return "-%,d".format(discount)
     }
 
     companion object {

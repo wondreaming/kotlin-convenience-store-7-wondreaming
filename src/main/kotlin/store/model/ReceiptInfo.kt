@@ -21,7 +21,7 @@ data class ReceiptInfo(
     var membershipDiscount = 0
 
     val finalAmount: Int
-        get() = _totalAmount + _promotionDiscount + membershipDiscount
+        get() = _totalAmount - _promotionDiscount - membershipDiscount
 
     val promotionDiscount: Int
         get() = _promotionDiscount
@@ -53,12 +53,12 @@ data class ReceiptInfo(
             val price = storeProducts[item.name]?.promotionProduct?.price
             calculatedPromotionDiscount += price!! * item.quantity
         }
-        _promotionDiscount = -calculatedPromotionDiscount
+        _promotionDiscount = calculatedPromotionDiscount
     }
 
     private fun calculateMmembershipDiscount() {
         if (membership.isMember && membership.dailyLimitUsed < 8000) {
-            membershipDiscount = -(Math.floor(((_totalAmount + _promotionDiscount) * 0.3) / 1000.0) * 1000).toInt()
+            membershipDiscount = (Math.floor(((_totalAmount - _promotionDiscount) * 0.3) / 1000.0) * 1000).toInt()
         }
     }
 
