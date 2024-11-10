@@ -30,7 +30,7 @@ class PurchaseController(
             products[info.name]
                 ?.takeIf { product -> product.checkStock(info.quantity) }
                 ?.promotionProduct
-                ?.takeIf { it.isPromotionActive() }
+                ?.takeIf { it.isPromotionActive() && it.quantity > 0}
                 ?.let { promotionProduct ->
                     handleStockConfirmation(info, promotionProduct)
                 }
