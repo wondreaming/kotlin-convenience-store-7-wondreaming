@@ -1,6 +1,5 @@
 package store.model
 
-import kotlin.math.max
 import kotlin.math.min
 
 data class ReceiptInfo(

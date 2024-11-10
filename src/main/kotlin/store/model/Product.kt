@@ -1,6 +1,6 @@
 package store.model
 
-class Product(
+data class Product(
     val name: String,
     private var _promotionProduct: PromotionProduct?,
     private var _nonPromotionProduct: NonPromotionProduct?,

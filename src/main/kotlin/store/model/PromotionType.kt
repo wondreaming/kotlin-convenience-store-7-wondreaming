@@ -3,7 +3,7 @@ package store.model
 import camp.nextstep.edu.missionutils.DateTimes
 import java.time.LocalDateTime
 
-class PromotionType(
+data class PromotionType(
     val name: String,
     val buyQuantity: Int,
     val freeQuantity: Int,
