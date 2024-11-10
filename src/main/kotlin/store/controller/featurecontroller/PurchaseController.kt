@@ -53,7 +53,6 @@ class PurchaseController(
 
     private fun handlePromotionConfirmation(info: PurchaseInfo, product: Product) {
         val missingQuantity = product.promotionProduct!!.missingPromotionQuantity(info.quantity)
-        println(missingQuantity)
         while (true) {
             try {
                 val userResponse = userInteractionController.handlePromotionConfirmation(info.name, missingQuantity)
