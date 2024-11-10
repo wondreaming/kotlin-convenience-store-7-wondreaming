@@ -69,7 +69,7 @@ class PurchaseController(
 
     private fun handleStockConfirmation(info: PurchaseInfo, promotionProduct: PromotionProduct) {
         val quantityNeeded = info.quantity - promotionProduct.calculateEligiblePromotionQuantity()
-        while (quantityNeeded >= 0) {
+        while (quantityNeeded > 0) {
             try {
                 val userResponse = userInteractionController.handleFullPriceConfirmation(info.name, quantityNeeded)
                 userResponse.let {
