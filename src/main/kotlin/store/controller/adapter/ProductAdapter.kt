@@ -10,7 +10,9 @@ class ProductAdapter {
     fun adaptProducts(products: Map<String, Product>): List<String> {
         return products.flatMap { product ->
             listOfNotNull(
-                product.value.promotionProduct?.let { getDisplayPromotionProduct(product.key, it) },
+                product.value.promotionProduct?.takeIf { it.promotionType.isPromotionActive() }?.let {
+                    getDisplayPromotionProduct(product.key, it)
+                },
                 product.value.nonPromotionProduct?.let { getDisplayNonPromotionProduct(product.key, it) }
             )
         }

@@ -24,6 +24,7 @@ class Product(
         _nonPromotionProduct = nonPromotionProduct
     }
 
+
     fun reduceQuantity(amount: Int) {
         var remainingAmount = amount
         if (_promotionProduct != null && _promotionProduct!!.isPromotionActive() && _promotionProduct!!.quantity > 0) {
@@ -31,11 +32,14 @@ class Product(
             _promotionProduct = _promotionProduct!!.copy(_quantity = promotionProduct!!.quantity - reducedAmount)
             remainingAmount -= reducedAmount
         }
-        if (remainingAmount > 0 && _nonPromotionProduct != null && _nonPromotionProduct!!.quantity > 0) {
+        if (remainingAmount > 0 && _nonPromotionProduct != null && _nonPromotionProduct!!.quantity >= remainingAmount) {
             _nonPromotionProduct = _nonPromotionProduct!!.copy(_quantity = _nonPromotionProduct!!.quantity - remainingAmount)
         }
     }
 
+    fun updateNonPromotionQuantity(quantity: Int) {
+        _nonPromotionProduct = _nonPromotionProduct!!.copy(_quantity = _nonPromotionProduct!!.quantity + quantity)
+    }
     companion object {
         fun isProductAvailable(name: String, products: Map<String, Product>): Boolean {
             return products.containsKey(name)

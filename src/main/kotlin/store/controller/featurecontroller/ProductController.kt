@@ -30,8 +30,12 @@ class ProductController(
 
     private fun createProduct(name: String, price: String, quantity: String, promotionTypeName: String): Product {
         if (promotionTypeName != NO_PROMOTION_LABEL) {
-            val promotionProduct = parsePromotionProduct(price, quantity, promotionTypeName)
-            return Product(name, promotionProduct, null)
+            val promotionTypes = findPromotionType(promotionTypeName)
+            if (promotionTypes.isPromotionActive()) {
+                val promotionProduct = parsePromotionProduct(price, quantity, promotionTypeName)
+                return Product(name, promotionProduct, null)
+
+            }
         }
         val nonPromotionProduct = parseNonPromotionProduct(price, quantity)
         return Product(name, null, nonPromotionProduct)
@@ -43,12 +47,20 @@ class ProductController(
         quantity: String,
         promotionTypeName: String
     ) {
-        if (promotionTypeName != NO_PROMOTION_LABEL && product.promotionProduct == null) {
-            product.updatePromotionProduct(parsePromotionProduct(price, quantity, promotionTypeName))
-            return
+
+        if (promotionTypeName != NO_PROMOTION_LABEL) {
+            val promotionTypes = findPromotionType(promotionTypeName)
+            if (promotionTypes.isPromotionActive() && product.promotionProduct == null) {
+                product.updatePromotionProduct(parsePromotionProduct(price, quantity, promotionTypeName))
+                return
+            }
         }
-        if (promotionTypeName == NO_PROMOTION_LABEL && product.nonPromotionProduct == null) {
-            product.updateNonPromotionProduct(parseNonPromotionProduct(price, quantity))
+        if (promotionTypeName == NO_PROMOTION_LABEL || !findPromotionType(promotionTypeName).isPromotionActive()) {
+            if (product.nonPromotionProduct == null) {
+                product.updateNonPromotionProduct(parseNonPromotionProduct(price, quantity))
+            } else {
+                product.updateNonPromotionQuantity(quantity.toInt())
+            }
         }
     }
 
