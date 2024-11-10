@@ -48,21 +48,46 @@ class ProductController(
         quantity: String,
         promotionTypeName: String
     ) {
+        if (isPromotionProductUpdateNeeded(product, promotionTypeName)) {
+            updatePromotionProduct(product, price, quantity, promotionTypeName)
+            return
+        }
 
-        if (promotionTypeName != NO_PROMOTION_LABEL) {
-            val promotionTypes = findPromotionType(promotionTypeName)
-            if (promotionTypes.isPromotionActive() && product.promotionProduct == null) {
-                product.updatePromotionProduct(parsePromotionProduct(price, quantity, promotionTypeName))
-                return
-            }
+        if (isNonPromotionProductCreationNeeded(product, promotionTypeName)) {
+            updateNonPromotionProduct(product, price, quantity)
+            return
         }
-        if (promotionTypeName == NO_PROMOTION_LABEL || !findPromotionType(promotionTypeName).isPromotionActive()) {
-            if (product.nonPromotionProduct == null) {
-                product.updateNonPromotionProduct(parseNonPromotionProduct(price, quantity))
-            } else {
-                product.updateNonPromotionQuantity(quantity.toInt())
-            }
-        }
+
+        increaseNonPromotionQuantity(product, quantity)
+    }
+
+    private fun isPromotionProductUpdateNeeded(product: Product, promotionTypeName: String): Boolean {
+        return promotionTypeName != NO_PROMOTION_LABEL &&
+                findPromotionType(promotionTypeName).isPromotionActive() &&
+                product.promotionProduct == null
+    }
+
+    private fun isNonPromotionProductCreationNeeded(product: Product, promotionTypeName: String): Boolean {
+        return promotionTypeName == NO_PROMOTION_LABEL ||
+                !findPromotionType(promotionTypeName).isPromotionActive() &&
+                product.nonPromotionProduct == null
+    }
+
+    private fun updatePromotionProduct(
+        product: Product,
+        price: String,
+        quantity: String,
+        promotionTypeName: String
+    ) {
+        product.updatePromotionProduct(parsePromotionProduct(price, quantity, promotionTypeName))
+    }
+
+    private fun updateNonPromotionProduct(product: Product, price: String, quantity: String) {
+        product.updateNonPromotionProduct(parseNonPromotionProduct(price, quantity))
+    }
+
+    private fun increaseNonPromotionQuantity(product: Product, quantity: String) {
+        product.updateNonPromotionQuantity(quantity.toInt())
     }
 
     private fun parsePromotionProduct(
