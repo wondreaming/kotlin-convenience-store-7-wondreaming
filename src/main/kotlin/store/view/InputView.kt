@@ -7,8 +7,4 @@ class InputView {
         val input = Console.readLine().trim()
         return input
     }
-
-    fun closeInput() {
-        Console.close()
-    }
 }

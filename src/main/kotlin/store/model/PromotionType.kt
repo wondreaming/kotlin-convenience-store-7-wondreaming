@@ -10,12 +10,9 @@ class PromotionType(
     val startDate: LocalDateTime,
     val endDate: LocalDateTime,
 ) {
-    // 오늘이 프로모션 날짜에 포함이 되는 지 확이하는 로직
     fun isPromotionActive(): Boolean {
         val today = DateTimes.now()
         val isPromotionActiveToday = today.isAfter(startDate) && today.isBefore(endDate)
         return isPromotionActiveToday
     }
-
-
 }

@@ -29,33 +29,41 @@ class OutputView {
     }
 
     fun showReceipt(receiptInfo: ReceiptInfo) {
-        println("\n==============W 편의점================")
-        println("%-15s %5s %8s".format("상품명", "수량", "금액"))
+        println(RECEIPT_HEADER)
+        showItems(receiptInfo)
+        showBonusItems(receiptInfo)
+        showTotal(receiptInfo)
+    }
+
+    private fun showItems(receiptInfo: ReceiptInfo) {
+        println(RECEIPT_HEADER_FORMAT.format(NAME, QUANTITY, PRICE))
         receiptInfo.items.forEach { item ->
             val itemTotalAmount = receiptInfo.getItemPrice(item.name) * item.quantity
-            println(String.format("%-15s %5d %,8d", item.name, item.quantity, itemTotalAmount))
+            println(RECEIPT_ITEM_FORMAT.format(item.name, item.quantity, itemTotalAmount))
         }
-        println("=============증\t\t정===============")
-        receiptInfo.bonusItems.forEach { bonusItem ->
-            println(String.format("%-8s %,8d", bonusItem.name, bonusItem.quantity))
-        }
-        println("====================================")
-        println(
-            String.format(
-                "%-15s %5d %,8d",
-                "총구매액",
-                receiptInfo.totalQuantity,
-                receiptInfo.totalAmount,
+    }
 
-                )
-        )
-        println(String.format("%-15s %8s", "행사할인", formatDiscount(receiptInfo.promotionDiscount)))
-        println(String.format("%-15s %8s", "멤버십할인", formatDiscount(receiptInfo.membershipDiscount)))
-        println(String.format("%-15s %,8d", "내실돈", receiptInfo.finalAmount))
+    private fun showBonusItems(receiptInfo: ReceiptInfo) {
+        println(RECEIPT_BONUS_HEADER)
+        receiptInfo.bonusItems.forEach { bonusItem ->
+            println(RECEIPT_BONUS_FORMAT.format(bonusItem.name, bonusItem.quantity))
+        }
+    }
+
+    private fun showTotal(receiptInfo: ReceiptInfo) {
+        println(RECEIPT_DIVIDER)
+        println(RECEIPT_TOTAL_FORMAT.format(TOTAL_QUANTITY, receiptInfo.totalQuantity, receiptInfo.totalAmount))
+        println(RECEIPT_DISCOUNT_FORMAT.format(PROMOTION_DISCOUNT, formatDiscount(receiptInfo.promotionDiscount)))
+        println(RECEIPT_DISCOUNT_FORMAT.format(MEMBERSHIP_DISCOUNT, formatDiscount(receiptInfo.membershipDiscount)))
+        println(RECEIPT_DISCOUNT_FORMAT.format(FINAL_AMOUNT, formatFinalAmount(receiptInfo.finalAmount)))
     }
 
     private fun formatDiscount(discount: Int): String {
-        return "-%,d".format(discount)
+        return DISCOUNT_FORMAT.format(discount)
+    }
+
+    private fun formatFinalAmount(discount: Int): String {
+        return FINAL_AMOUNT_FORMAT.format(discount)
     }
 
     companion object {
@@ -67,5 +75,22 @@ class OutputView {
         private const val PROMOTION_STOCK_SHORTAGE_MESSAGE = "현재 %s %d개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)"
         private const val MEMBERSHIP_DISCOUNT_MESSAGE = "멤버십 할인을 받으시겠습니까? (Y/N)"
         private const val ADDITIONAL_PURCHASE_MESSAGE = "감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)"
+        private const val RECEIPT_HEADER = "\n==============W 편의점================"
+        private const val RECEIPT_HEADER_FORMAT = "%-15s %5s %8s"
+        private const val RECEIPT_ITEM_FORMAT = "%-15s %5d %,8d"
+        private const val RECEIPT_BONUS_FORMAT = "%-8s %,8d"
+        private const val RECEIPT_TOTAL_FORMAT = "%-15s %5d %,8d"
+        private const val RECEIPT_DISCOUNT_FORMAT = "%-15s %8s"
+        private const val RECEIPT_BONUS_HEADER = "=============증\t\t정==============="
+        private const val RECEIPT_DIVIDER = "===================================="
+        private const val TOTAL_QUANTITY = "총구매액"
+        private const val PROMOTION_DISCOUNT = "총구매액"
+        private const val MEMBERSHIP_DISCOUNT = "맴버십할인"
+        private const val FINAL_AMOUNT = "내실돈"
+        private const val NAME = "상품명"
+        private const val QUANTITY = "수량"
+        private const val PRICE = "금액"
+        private const val DISCOUNT_FORMAT = "-%,d"
+        private const val FINAL_AMOUNT_FORMAT = "%,d"
     }
 }
