@@ -21,15 +21,15 @@ class OutputView {
     }
 
     fun showMembershipDiscount() {
-        println(MEMBERSHIP_DISCOUNT_MESSAGE)
+        println(NEW_LINE + MEMBERSHIP_DISCOUNT_MESSAGE)
     }
 
     fun showAdditionalPurchase() {
-        println(ADDITIONAL_PURCHASE_MESSAGE)
+        println(NEW_LINE + ADDITIONAL_PURCHASE_MESSAGE)
     }
 
     fun showReceipt(receiptInfo: ReceiptInfo) {
-        println("==============W 편의점================")
+        println("\n==============W 편의점================")
         println("%-15s %5s %8s".format("상품명", "수량", "금액"))
         receiptInfo.items.forEach { item ->
             val itemTotalAmount = receiptInfo.getItemPrice(item.name) * item.quantity
