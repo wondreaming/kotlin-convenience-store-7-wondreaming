@@ -17,10 +17,11 @@ class SentenceValidator(
     }
 
     private fun checkIsDelimiter() {
-        require(itemCount <= 1 || DELIMITER in sentence) { N0_COMMA.errorMessage }
+        require(itemCount <= ONE || DELIMITER in sentence) { N0_COMMA.errorMessage }
     }
 
     companion object {
         private const val DELIMITER = ","
+        private const val ONE = 1
     }
 }

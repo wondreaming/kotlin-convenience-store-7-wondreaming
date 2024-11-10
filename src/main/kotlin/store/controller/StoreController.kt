@@ -45,13 +45,11 @@ class StoreController(
 
     private fun handlePurchaseProcess(storeProducts: Map<String, Product>) {
         val displayProductsInfo = productAdapter.adaptProducts(storeProducts)
-
         val purchaseInput = validatePurchaseInput(displayProductsInfo, storeProducts)
         val purchaseInfo = adaptPurchaseInfo(purchaseInput)
         val finalPurchaseInfo = processPromotionAndStock(purchaseInfo, storeProducts)
         generateAndDisplayReceipt(finalPurchaseInfo, storeProducts)
         updateProductQuantities(finalPurchaseInfo, storeProducts)
-//        saveUpdatedProductsToMarkdown(storeProducts)
     }
 
     private fun validatePurchaseInput(displayProductsInfo:List<String>, storeProducts: Map<String, Product>): String {
@@ -79,45 +77,31 @@ class StoreController(
     }
 
     private fun generateAndDisplayReceipt(finalPurchaseInfo: List<PurchaseInfo>, storeProducts: Map<String, Product>) {
+        val receiptInfo = createReceiptInfo(finalPurchaseInfo, storeProducts)
+        outputView.showReceipt(receiptInfo)
+    }
+
+    private fun createReceiptInfo(finalPurchaseInfo: List<PurchaseInfo>, storeProducts: Map<String, Product>): ReceiptInfo {
         val bonusProducts = purchaseController.checkBonusProducts(finalPurchaseInfo, storeProducts)
-        val membership = Membership()
-        membershipController.applyMembershipDiscount(membership)
-        val receiptInfo = ReceiptInfo(
+        val membership = applyMembershipDiscount()
+        return ReceiptInfo(
             _items = finalPurchaseInfo,
             bonusItems = bonusProducts,
             membership = membership,
             storeProducts = storeProducts
         )
-        outputView.showReceipt(receiptInfo)
     }
+
+    private fun applyMembershipDiscount(): Membership {
+        val membership = Membership()
+        membershipController.applyMembershipDiscount(membership)
+        return membership
+    }
+
 
     private fun updateProductQuantities(finalPurchaseInfo: List<PurchaseInfo>, storeProducts: Map<String, Product>) {
         finalPurchaseInfo.forEach { purchase ->
             storeProducts[purchase.name]?.reduceQuantity(purchase.quantity)
         }
-
     }
-
-//    private fun saveUpdatedProductsToMarkdown(storeProducts: Map<String, Product>) {
-//        val header = "name,price,quantity,promotion"
-//        val lines = mutableListOf(header)
-//
-//        storeProducts.forEach { (name, product) ->
-//            val promotionProduct = product.promotionProduct
-//            val nonPromotionProduct = product.nonPromotionProduct
-//
-//            // 프로모션 제품이 있는 경우
-//            if (promotionProduct != null) {
-//                lines.add(
-//                    "$name,${promotionProduct.price},${promotionProduct.quantity},${promotionProduct.promotionType.name}"
-//                )
-//            }
-//            if (nonPromotionProduct != null) {
-//                lines.add(
-//                    "$name,${nonPromotionProduct.price},${nonPromotionProduct.quantity},null"
-//                )
-//            }
-//        }
-//        File("src/main/resources/products.md").writeText(lines.joinToString("\n"))
-//    }
 }
